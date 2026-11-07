@@ -1,0 +1,19 @@
+{
+  "name": "Maîtrise Budget",
+  "short_name": "Budget",
+  "description": "Gestion de budget personnel et provisions mensuelles",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f8f6",
+  "theme_color": "#10251f",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

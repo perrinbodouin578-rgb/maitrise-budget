@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10251f">
+  <meta name="description" content="Maîtrise Budget — gérez vos revenus, dépenses, provisions et objectifs d'épargne.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Maîtrise Budget</title>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Accueil"><span class="brand-mark">M</span><span>maîtrise<span class="brand-light">budget</span></span></a>
+    <div class="top-actions"><button class="icon-btn" id="installBtn" hidden aria-label="Installer l'application">↓</button><button class="avatar" aria-label="Profil">PB</button></div>
+  </header>
+
+  <main class="shell">
+    <section class="welcome">
+      <div><p class="eyebrow" id="todayLabel">VOTRE ESPACE FINANCIER</p><h1>Gardez le contrôle<br>de votre argent.</h1><p class="muted">Chaque franc a une destination.</p></div>
+      <label class="month-picker"><span>Mois</span><input type="month" id="monthPicker"></label>
+    </section>
+
+    <section class="hero-card">
+      <div class="hero-head"><span>Solde réellement disponible</span><span class="live-dot">● EN DIRECT</span></div>
+      <div class="balance" id="availableBalance">0 <small>FCFA</small></div>
+      <p class="hero-note" id="balanceNote">Après dépenses et provisions planifiées</p>
+      <div class="hero-stats">
+        <div><span>Revenus reçus</span><strong id="incomeTotal">0 FCFA</strong></div>
+        <div><span>Dépenses réalisées</span><strong id="spentTotal">0 FCFA</strong></div>
+        <div><span>À provisionner</span><strong id="provisionTotal">0 FCFA</strong></div>
+      </div>
+    </section>
+
+    <section class="quick-actions">
+      <button class="action primary" data-open="transactionModal"><span>＋</span> Ajouter une dépense</button>
+      <button class="action" data-open="incomeModal"><span>↗</span> Ajouter un revenu</button>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div><p class="eyebrow">VOTRE MOIS</p><h2>Vue d'ensemble</h2></div><span class="tag" id="monthStatus">En cours</span></div>
+      <div class="overview-grid">
+        <article class="metric-card"><div class="metric-icon green">↗</div><span>Revenus</span><strong id="overviewIncome">0</strong><small>FCFA reçus</small></article>
+        <article class="metric-card"><div class="metric-icon orange">↘</div><span>Dépenses</span><strong id="overviewSpent">0</strong><small>FCFA dépensés</small></article>
+        <article class="metric-card"><div class="metric-icon blue">◫</div><span>Provisions</span><strong id="overviewProvision">0</strong><small>FCFA à réserver</small></article>
+        <article class="metric-card"><div class="metric-icon purple">◎</div><span>Épargne</span><strong id="overviewSavings">0</strong><small>FCFA objectifs</small></article>
+      </div>
+    </section>
+
+    <section class="section two-col">
+      <article class="panel">
+        <div class="section-title compact"><div><p class="eyebrow">RÉPARTITION</p><h2>Où va l'argent ?</h2></div></div>
+        <div class="chart-wrap"><canvas id="expenseChart" width="320" height="220" aria-label="Graphique des dépenses par catégorie"></canvas><div id="chartLegend" class="legend"></div></div>
+      </article>
+      <article class="panel">
+        <div class="section-title compact"><div><p class="eyebrow">DISCIPLINE</p><h2>Budget consommé</h2></div></div>
+        <div class="progress-number"><strong id="budgetPercent">0%</strong><span>du budget prévu</span></div>
+        <div class="progress-track"><div id="budgetProgress" class="progress-fill"></div></div>
+        <p class="muted small" id="budgetCaption">Ajoutez des budgets pour suivre vos limites.</p>
+        <div class="budget-mini"><span>Budget total</span><strong id="plannedTotal">0 FCFA</strong></div>
+        <div class="budget-mini"><span>Reste du budget</span><strong id="budgetRemaining">0 FCFA</strong></div>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div><p class="eyebrow">ANTICIPER</p><h2>Mes provisions & objectifs</h2></div><button class="text-btn" data-open="planModal">＋ Ajouter</button></div>
+      <div id="plansList" class="list-card empty-state">Aucune provision pour ce mois. Planifiez votre loyer, vos factures ou votre épargne.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div><p class="eyebrow">MOUVEMENTS</p><h2>Activité récente</h2></div><span class="muted small" id="transactionCount">0 opération</span></div>
+      <div id="transactionsList" class="list-card empty-state">Aucune opération enregistrée pour ce mois.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div><p class="eyebrow">VOS RESSOURCES</p><h2>Sources de revenus</h2></div><button class="text-btn" data-open="incomeModal">＋ Ajouter</button></div>
+      <div id="sourcesList" class="list-card empty-state">Ajoutez vos salaires, activités ou autres sources de revenus.</div>
+    </section>
+
+    <footer><span>maîtrisebudget</span><span>Vos données restent sur cet appareil.</span></footer>
+  </main>
+
+  <nav class="bottom-nav"><a class="active" href="#top">⌂<span>Accueil</span></a><a href="#plansList">▤<span>Provisions</span></a><a href="#transactionsList">⇄<span>Activité</span></a></nav>
+
+  <dialog id="transactionModal" class="modal">
+    <form method="dialog" id="transactionForm">
+      <div class="modal-head"><div><p class="eyebrow">NOUVELLE OPÉRATION</p><h2>Ajouter une dépense</h2></div><button class="close" aria-label="Fermer">×</button></div>
+      <label>Libellé<input name="label" placeholder="Ex. Courses du marché" required maxlength="60"></label>
+      <div class="form-row"><label>Montant (FCFA)<input name="amount" type="number" min="1" step="1" placeholder="15000" required></label><label>Date<input name="date" type="date" required></label></div>
+      <label>Catégorie<select name="category" id="expenseCategory"></select></label>
+      <label>Note (facultatif)<input name="note" maxlength="120" placeholder="Détail de la dépense"></label>
+      <button class="submit-btn" type="submit">Enregistrer la dépense</button>
+    </form>
+  </dialog>
+
+  <dialog id="incomeModal" class="modal">
+    <form method="dialog" id="incomeForm">
+      <div class="modal-head"><div><p class="eyebrow">ENTRÉE D'ARGENT</p><h2>Ajouter un revenu</h2></div><button class="close" aria-label="Fermer">×</button></div>
+      <label>Source / libellé<input name="label" placeholder="Ex. Salaire, commerce..." required maxlength="60"></label>
+      <div class="form-row"><label>Montant (FCFA)<input name="amount" type="number" min="1" step="1" required></label><label>Date<input name="date" type="date" required></label></div>
+      <button class="submit-btn" type="submit">Enregistrer le revenu</button>
+    </form>
+  </dialog>
+
+  <dialog id="planModal" class="modal">
+    <form method="dialog" id="planForm">
+      <div class="modal-head"><div><p class="eyebrow">PLANIFICATION</p><h2>Créer une provision</h2></div><button class="close" aria-label="Fermer">×</button></div>
+      <label>Nom de la provision<input name="label" placeholder="Ex. Loyer, épargne urgence..." required maxlength="60"></label>
+      <div class="form-row"><label>Montant (FCFA)<input name="amount" type="number" min="1" step="1" required></label><label>Type<select name="type"><option value="provision">Dépense à prévoir</option><option value="savings">Objectif d'épargne</option></select></label></div>
+      <label>Catégorie<select name="category" id="planCategory"></select></label>
+      <button class="submit-btn" type="submit">Ajouter au plan du mois</button>
+    </form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
